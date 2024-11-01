@@ -42,10 +42,25 @@ use App\Http\Controllers\form_elements\BasicInput;
 use App\Http\Controllers\form_elements\InputGroups;
 use App\Http\Controllers\form_layouts\VerticalForm;
 use App\Http\Controllers\form_layouts\HorizontalForm;
+use App\Http\Controllers\person\person;
 use App\Http\Controllers\tables\Basic as TablesBasic;
+use App\Http\Controllers\tables_rol\tables_rol;
+use App\Http\Controllers\users\user;
+use App\Http\Controllers\user_tables\user_tables;
+use App\Http\Controllers\direction_tables\direction_tables;
+use App\Http\Controllers\user_permission\user_permission;
+use App\Http\Middleware\sessionsMiddle;
 
+
+// Login && Logout
+Route::get('/auth/login', [LoginBasic::class, 'showlogin_form'])->name('login')->middleware('guest');
+Route::post('/auth/login', [LoginBasic::class, 'postlogin'])->name('auth-login-post');
+
+//Route::middleware(sessionsMiddle::class)->group(function () {//
+
+Route::post('/auth/logout', [LoginBasic::class, 'logout'])->name('logout');
 // Main Page Route
-Route::get('/', [Analytics::class, 'index'])->name('dashboard');
+Route::get('/', [Analytics::class, 'index'])->name('dashboard')->middleware('web');
 
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');
@@ -62,12 +77,14 @@ Route::get('/pages/misc-error', [MiscError::class, 'index'])->name('pages-misc-e
 Route::get('/pages/misc-under-maintenance', [MiscUnderMaintenance::class, 'index'])->name('pages-misc-under-maintenance');
 
 // authentication
-Route::get('/auth/login-basic', [LoginBasic::class, 'index'])->name('auth-login-basic');
 Route::get('/auth/register-basic', [RegisterBasic::class, 'index'])->name('auth-register-basic');
 Route::get('/auth/forgot-password-basic', [ForgotPasswordBasic::class, 'index'])->name('auth-reset-password-basic');
 
-// cards
-Route::get('/cards/basic', [CardBasic::class, 'index'])->name('cards-basic');
+// Information Tables
+Route::get('/user/tables', [user_tables::class, 'index'])->name('users-table');
+Route::get('/roles/tables', [tables_rol::class, 'rol_index'])->name('roles-tables');
+Route::get('/directions/tables', [direction_tables::class, 'direction_index'])->name('directions-tables');
+Route::get('/permissions/tables', [user_permission::class, 'permission_index'])->name('permissions-tables');
 
 // User Interface
 Route::get('/ui/accordion', [Accordion::class, 'index'])->name('ui-accordion');
@@ -96,7 +113,6 @@ Route::get('/extended/ui-text-divider', [TextDivider::class, 'index'])->name('ex
 
 // icons
 Route::get('/icons/boxicons', [Boxicons::class, 'index'])->name('icons-boxicons');
-
 // form elements
 Route::get('/forms/basic-inputs', [BasicInput::class, 'index'])->name('forms-basic-inputs');
 Route::get('/forms/input-groups', [InputGroups::class, 'index'])->name('forms-input-groups');
@@ -107,3 +123,11 @@ Route::get('/form/layouts-horizontal', [HorizontalForm::class, 'index'])->name('
 
 // tables
 Route::get('/tables/basic', [TablesBasic::class, 'index'])->name('tables-basic');
+
+//Person and User Register
+Route::get('/auth/person-register', [person::class, 'person_view'])->name('auth-person-register');
+Route::post('/auth/person-register', [person::class, 'Postregistration'])->name('auth-person-register-post');
+
+Route::get('/auth/user-register', [user::class, 'user_view'])->name('auth-user-register');
+Route::post('/auth/user-register', [user::class, 'PostUserRegistrion'])->name('auth-user-register-post');
+//});//
